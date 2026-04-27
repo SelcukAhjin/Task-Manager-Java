@@ -62,25 +62,19 @@ public class TaskManager implements Saveable {
             if (!file.exists()) {
                 return;
             }
-
             Scanner reader = new Scanner(file);
-
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
                 String[] parts = line.split(";");
-
                 if (parts.length == 3) {
                     String title = parts[0];
                     String description = parts[1];
                     boolean done = Boolean.parseBoolean(parts[2]);
-
                     Task task = new Task(title, description, done);
                     tasks.add(task);
                 }
             }
-
             reader.close();
-
         } catch (Exception e) {
             System.out.println("Error while loading tasks!");
         }
@@ -92,10 +86,8 @@ public class TaskManager implements Saveable {
                 writer.write(task.toFileString());
                 writer.write("\n");
             }
-
             writer.close();
             System.out.println("Tasks saved successfully!");
-
         } catch (Exception e) {
             System.out.println("Error while saving tasks!");
         }
@@ -112,4 +104,3 @@ public class TaskManager implements Saveable {
         return true;
     }
 }
-

@@ -11,25 +11,19 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-
     }
-
     public TaskManager getTaskManager() {
         return taskManager;
     }
-
     public String getUsername() {
         return username;
     }
-
     public String getEmail() {
         return email;
     }
-
     public String toFileString(){
         return username + ";" + email + ";" + password;
     }
-
     public boolean checkPassword(String inputPassword) {
         return this.password.equals(inputPassword);
     }

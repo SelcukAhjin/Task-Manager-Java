@@ -54,6 +54,7 @@ public class Main {
                     case 1: {
                         //create task Line#149
                         addTask(sc, currentUser);
+
                         break;
                     }
                     case 2: {
