@@ -171,10 +171,21 @@ public class Main {
             sc.nextLine();
     }
     public static void addTask(Scanner sc, User currentUser) {
-        boolean done = false;
+        System.out.println("1. Normal Task");
+        System.out.println("2. Deadline Task");
+        int taskType = readValidInt(sc, "What type of task do you want to create?", 1, 2);
         String title = readNonEmptyString(sc,"Enter task title: ");
         String description = readNonEmptyString(sc,"Enter task description: ");
-        Task newTask = new Task(title, description, done);
+        boolean done = false;
+        Task newTask;
+        if (taskType == 1) {
+            //Normal Task
+            newTask = new Task(title, description, done);
+        } else {
+            // Deadline Task
+            String date = readNonEmptyString(sc, "Enter the deadline date (e.g., 31.12.2026): ");
+            newTask = new DeadlineTask(title, description, done, date);
+        }
         currentUser.getTaskManager().addTask(newTask);
         currentUser.getTaskManager().save(currentUser.getUsername() + "_tasks.txt");
     }
@@ -249,10 +260,10 @@ public class Main {
                 if ( number >= min&& number <= max ) {
                     return number;
                 } else {
-                    System.out.println("Bitte eine Zahl zwischen " + min + " und " + max + " eingeben!");
+                    System.out.println("Input a number between " + min + " and " + max + " !");
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input! Das war keine Zahl.");
+                System.out.println("Invalid input!");
             }
         }
     }

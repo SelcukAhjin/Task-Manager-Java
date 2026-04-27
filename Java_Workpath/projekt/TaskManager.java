@@ -72,6 +72,13 @@ public class TaskManager implements Saveable {
                     boolean done = Boolean.parseBoolean(parts[2]);
                     Task task = new Task(title, description, done);
                     tasks.add(task);
+                } else if (parts.length == 4) {
+                    String title = parts[0];
+                    String description = parts[1];
+                    boolean done = Boolean.parseBoolean(parts[2]);
+                    String date = parts[3];
+                    DeadlineTask deadlineTask = new DeadlineTask(title, description, done,date);
+                    tasks.add(deadlineTask);
                 }
             }
             reader.close();
