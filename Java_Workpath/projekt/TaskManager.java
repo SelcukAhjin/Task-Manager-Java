@@ -128,4 +128,15 @@ public class TaskManager implements Saveable {
                 task.showTask();
             }
     }
+    public void showDeadlinesSorted(){
+        ArrayList<DeadlineTask> deadlineList = new ArrayList<>();
+        for (Task task : tasks.values()){
+            if (task instanceof DeadlineTask)
+                deadlineList.add((DeadlineTask) task);
+        }
+        deadlineList.sort(Comparator.comparing(DeadlineTask::getDate));
+        for (DeadlineTask deadlineTask : deadlineList) {
+            deadlineTask.showTask();
+        }
+    }
 }

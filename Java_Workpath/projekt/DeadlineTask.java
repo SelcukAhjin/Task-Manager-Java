@@ -4,10 +4,12 @@ import java.time.LocalDate;
 
 public class DeadlineTask extends Task {
     private LocalDate date;
-    public DeadlineTask (String title,String description,boolean done,LocalDate date){
-        super(title,description,done);
+
+    public DeadlineTask(String title, String description, boolean done, LocalDate date) {
+        super(title, description, done);
         this.date = date;
     }
+
     public LocalDate getDate() {
         return date;
     }
@@ -17,13 +19,17 @@ public class DeadlineTask extends Task {
     }
 
     @Override
-    public String toFileString(){
-        return super.toFileString()+";"+date;
-
+    public String toFileString() {
+        return super.toFileString() + ";" + date;
     }
+
     @Override
-    public void showTask(){
+    public void showTask() {
         super.showTask();
-        System.out.println("Date: "+date);
+        System.out.println("Date: " + date);
+        if (date.isBefore(LocalDate.now()) && !super.isDone()) {
+            System.out.println("*** [ÜBERFÄLLIG] ***");
+        }
     }
 }
+
