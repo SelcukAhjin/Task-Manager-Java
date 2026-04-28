@@ -110,4 +110,18 @@ public class TaskManager implements Saveable {
         }
         return true;
     }
+    public void searchTasks(String keyword){
+        for (Task task : tasks){
+            if (task.getTitle().toLowerCase().contains(keyword.toLowerCase())) {
+                task.showTask();
+            }
+        }
+    }
+    public void filterTasks(boolean status){
+        for (Task task : tasks){
+            if (status==task.isDone()) {
+                task.showTask();
+            }
+        }
+    }
 }

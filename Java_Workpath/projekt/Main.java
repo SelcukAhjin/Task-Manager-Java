@@ -46,7 +46,7 @@ public class Main {
                 //Methode ShowLoggedInMenu Line#99
                 showLoggedMenu(currentUser);
                 choice = readValidInt(sc,"What would you like to do ?",1,8);
-                if ((choice >= 2 && choice <= 6)&&currentUser.getTaskManager().getTaskCount() == 0){
+                if ((choice >= 2 && choice <= 7)&&currentUser.getTaskManager().getTaskCount() == 0){
                     System.out.println("No task yet!");
                     continue;
                 }
@@ -64,32 +64,56 @@ public class Main {
                         break;
                     }
                     case 3: {
+                        System.out.println("1 for searching");
+                        System.out.println("2 to show done tasks");
+                        System.out.println("3 to show undone tasks");
+                        switch (readValidInt(sc,"What would you like to do ?",1,3)){
+                            case 1 -> {
+                                currentUser.getTaskManager().searchTasks(readNonEmptyString(sc,"Name of the Task: "));
+                                System.out.println("Press Enter to continue...");
+                                sc.nextLine();
+                            }
+                            case 2 -> {
+                                currentUser.getTaskManager().filterTasks(true);
+                                System.out.println("Press Enter to continue...");
+                                sc.nextLine();
+                            }
+                            case 3 -> {
+                                currentUser.getTaskManager().filterTasks(false);
+                                System.out.println("Press Enter to continue...");
+                                sc.nextLine();
+                            }
+                        }
+
+                        break;
+                    }
+                    case 4: {
                         // mark tasks as Done Line#162
                         taskDone(currentUser, sc);
                         break;
                     }
-                    case 4: {
+                    case 5: {
                         //mark tasks as Undone Line#174
                         taskUndone(sc, currentUser);
                         break;
                     }
-                    case 5: {
+                    case 6: {
                         //delete Task Line#186
                         deleteTask(sc, currentUser);
                         break;
                     }
-                    case 6: {
+                    case 7: {
                         //Edit Task Line#198
                         editTask(sc, currentUser);
                         break;
                     }
-                    case 7: {
+                    case 8: {
                         //logout
                         currentUser.getTaskManager().save(currentUser.getUsername()+"_tasks.txt");
                         currentUser = null;
                         break;
                     }
-                    case 8: {
+                    case 9: {
                         //exit
                         currentUser.getTaskManager().save(currentUser.getUsername()+"_tasks.txt");
                         running = false;
@@ -117,14 +141,15 @@ public class Main {
         System.out.println("1. Add Task");
         if (currentUser.getTaskManager().getTaskCount() != 0) {
             System.out.println("2. Show Tasks");
-            System.out.println("3. Mark Task as Done");
-            System.out.println("4. Mark Task as Undone");
-            System.out.println("5. Delete Task");
-            System.out.println("6. Edit Task");
+            System.out.println("3. Search tasks");
+            System.out.println("4. Mark Task as Done");
+            System.out.println("5. Mark Task as Undone");
+            System.out.println("6. Delete Task");
+            System.out.println("7. Edit Task");
         }
 
-        System.out.println("7. Logout");
-        System.out.println("8. Exit");
+        System.out.println("8. Logout");
+        System.out.println("9. Exit");
     }
     public static User login(Scanner sc, UserManager lmanager) {
         System.out.println("Enter your Username or Email: ");
