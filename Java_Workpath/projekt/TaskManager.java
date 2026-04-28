@@ -139,4 +139,25 @@ public class TaskManager implements Saveable {
             deadlineTask.showTask();
         }
     }
+    public void showDashboard(){
+        int doneCount = 0;
+        int openCount = 0;
+        int overdueCount = 0;
+        for (Task task : tasks.values()){
+            if (task.isDone()) {
+                doneCount++;
+            } else {
+                openCount++;
+            }
+            if (task instanceof DeadlineTask&&!task.isDone()&&((DeadlineTask) task).getDate().isBefore(LocalDate.now())) {
+                overdueCount++;
+            }
+        }
+        System.out.println("=== YOUR DASHBOARD ===\n" +
+                "Total Tasks: " + tasks.size() + "\n" +
+                "Completed:   " +  doneCount + "\n" +
+                "Open:        " + openCount + "\n" +
+                "OVERDUE:     " +  overdueCount + "\n" +
+                "======================");
+    }
 }

@@ -44,9 +44,14 @@ public class Main {
                 }
                 //This else switchpoint to loggedIn
             } else {
+                if (currentUser.getTaskManager().getTaskCount() != 0){
+                currentUser.getTaskManager().showDashboard();
+                System.out.println("Press Enter to continue...");
+                sc.nextLine();
+                }
                 //Methode ShowLoggedInMenu Line#99
                 showLoggedMenu(currentUser);
-                choice = readValidInt(sc, "What would you like to do ?", 1, 8);
+                choice = readValidInt(sc, "What would you like to do ?", 1, 9);
                 if ((choice >= 2 && choice <= 7) && currentUser.getTaskManager().getTaskCount() == 0) {
                     System.out.println("No task yet!");
                     continue;
@@ -145,8 +150,6 @@ public class Main {
     }
 
     public static void showLoggedMenu(User currentUser) {
-        System.out.println("Welcome " + currentUser.getUsername() + " to your Task Manager!");
-        System.out.println("What would you like to do?");
         System.out.println("1. Add Task");
         if (currentUser.getTaskManager().getTaskCount() != 0) {
             System.out.println("2. Show Tasks");
