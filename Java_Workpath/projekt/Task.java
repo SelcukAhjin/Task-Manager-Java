@@ -4,15 +4,25 @@ public class Task {
     private String title;
     private String description;
     private boolean done;
+    private static int idCounter = 0;
+    private int id;
     public Task(String title,String description,boolean done){
+        idCounter++;
         this.title = title;
         this.description = description;
         this.done = done;
+        this.id = idCounter;
     }
+
+    public int getId() {
+        return id;
+    }
+
     public void showTask(){
         System.out.println("Your task: "+title);
         System.out.println("Description:  "+description);
         System.out.println("Status: "+ (done ? "done" : "undone"));
+        System.out.println("Id: "+id+".");
     }
     public void markAsDone(){
         done = true;
