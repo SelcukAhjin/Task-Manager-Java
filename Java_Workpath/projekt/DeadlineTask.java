@@ -1,16 +1,18 @@
 package Java_Workpath.projekt;
 
+import java.time.LocalDate;
+
 public class DeadlineTask extends Task {
-    private String date = "";
-    public DeadlineTask (String title,String description,boolean done,String date){
+    private LocalDate date;
+    public DeadlineTask (String title,String description,boolean done,LocalDate date){
         super(title,description,done);
         this.date = date;
     }
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

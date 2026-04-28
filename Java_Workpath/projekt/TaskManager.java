@@ -1,6 +1,7 @@
 package Java_Workpath.projekt;
 import java.io.FileWriter;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class TaskManager implements Saveable {
                     String title = parts[0];
                     String description = parts[1];
                     boolean done = Boolean.parseBoolean(parts[2]);
-                    String date = parts[3];
+                    LocalDate date = LocalDate.parse(parts[3]);
                     DeadlineTask deadlineTask = new DeadlineTask(title, description, done,date);
                     tasks.put(deadlineTask.getId(),deadlineTask);
                 }

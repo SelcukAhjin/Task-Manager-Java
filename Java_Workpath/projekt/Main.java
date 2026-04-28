@@ -1,4 +1,5 @@
 package Java_Workpath.projekt;
+import java.time.LocalDate;
 import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
@@ -15,14 +16,14 @@ public class Main {
             //LoggedOff Starting Point
             if (currentUser == null) {//methode ShowHubMenu Line#92
                 showHubMenu();
-                choiceHub = readValidInt(sc,"What would you like to do?",1,3);
+                choiceHub = readValidInt(sc, "What would you like to do?", 1, 3);
                 switch (choiceHub) {
                     case 1 -> {
                         //Methode to Login Line#114
                         currentUser = login(sc, lmanager);
 
                         if (currentUser != null) {
-                            currentUser.getTaskManager().load(currentUser.getUsername()+"_tasks.txt");
+                            currentUser.getTaskManager().load(currentUser.getUsername() + "_tasks.txt");
 
                         }
                     }
@@ -42,11 +43,11 @@ public class Main {
                     }
                 }
                 //This else switchpoint to loggedIn
-            }else{
+            } else {
                 //Methode ShowLoggedInMenu Line#99
                 showLoggedMenu(currentUser);
-                choice = readValidInt(sc,"What would you like to do ?",1,8);
-                if ((choice >= 2 && choice <= 7)&&currentUser.getTaskManager().getTaskCount() == 0){
+                choice = readValidInt(sc, "What would you like to do ?", 1, 8);
+                if ((choice >= 2 && choice <= 7) && currentUser.getTaskManager().getTaskCount() == 0) {
                     System.out.println("No task yet!");
                     continue;
                 }
@@ -66,9 +67,9 @@ public class Main {
                         System.out.println("2 to show done tasks");
                         System.out.println("3 to show undone tasks");
                         System.out.println("4 to show all tasks A-Z");
-                        switch (readValidInt(sc,"What would you like to do ?",1,4)){
+                        switch (readValidInt(sc, "What would you like to do ?", 1, 4)) {
                             case 1 -> {
-                                currentUser.getTaskManager().searchTasks(readNonEmptyString(sc,"Name of the Task: "));
+                                currentUser.getTaskManager().searchTasks(readNonEmptyString(sc, "Name of the Task: "));
                                 System.out.println("Press Enter to continue...");
                                 sc.nextLine();
                             }
@@ -112,13 +113,13 @@ public class Main {
                     }
                     case 8: {
                         //logout
-                        currentUser.getTaskManager().save(currentUser.getUsername()+"_tasks.txt");
+                        currentUser.getTaskManager().save(currentUser.getUsername() + "_tasks.txt");
                         currentUser = null;
                         break;
                     }
                     case 9: {
                         //exit
-                        currentUser.getTaskManager().save(currentUser.getUsername()+"_tasks.txt");
+                        currentUser.getTaskManager().save(currentUser.getUsername() + "_tasks.txt");
                         running = false;
                         break;
                     }
@@ -138,6 +139,7 @@ public class Main {
         System.out.println("2. Register");
         System.out.println("3. Exit");
     }
+
     public static void showLoggedMenu(User currentUser) {
         System.out.println("Welcome " + currentUser.getUsername() + " to your Task Manager!");
         System.out.println("What would you like to do?");
@@ -154,6 +156,7 @@ public class Main {
         System.out.println("8. Logout");
         System.out.println("9. Exit");
     }
+
     public static User login(Scanner sc, UserManager lmanager) {
         System.out.println("Enter your Username or Email: ");
         String loginInput = sc.nextLine();
@@ -167,43 +170,45 @@ public class Main {
         System.out.println("Welcome " + user.getUsername() + "!");
         return user;
     }
+
     public static void register(Scanner sc, UserManager lmanager) {
-        String username = readNonEmptyString(sc,"Enter your Username: ");
+        String username = readNonEmptyString(sc, "Enter your Username: ");
         if (lmanager.usernameExists(username)) {
             System.out.println("Username already in use!");
             return;
         }
-        String email = readNonEmptyString(sc,"Enter your Email: ");
-        if (!lmanager.isValidEmail(email)){
+        String email = readNonEmptyString(sc, "Enter your Email: ");
+        if (!lmanager.isValidEmail(email)) {
             System.out.println("Invalid input");
             System.out.println("Press Enter to continue...");
             sc.nextLine();
             return;
-            }
-            if (lmanager.emailExists(email)) {
-                System.out.println("Email already in use!");
-                return;
-            }
-            String password = readNonEmptyString(sc,"Enter your Password: ");
-            if (!lmanager.isValidPassword(password)){
-                System.out.println("Invalid input");
-                System.out.println("Press Enter to continue...");
-                sc.nextLine();
-                return;
-            }
-            User user = new User(username, email, password);
-            lmanager.addUser(user);
-            lmanager.save("users.txt");
-            System.out.println("Successfully Registered!");
+        }
+        if (lmanager.emailExists(email)) {
+            System.out.println("Email already in use!");
+            return;
+        }
+        String password = readNonEmptyString(sc, "Enter your Password: ");
+        if (!lmanager.isValidPassword(password)) {
+            System.out.println("Invalid input");
             System.out.println("Press Enter to continue...");
             sc.nextLine();
+            return;
+        }
+        User user = new User(username, email, password);
+        lmanager.addUser(user);
+        lmanager.save("users.txt");
+        System.out.println("Successfully Registered!");
+        System.out.println("Press Enter to continue...");
+        sc.nextLine();
     }
+
     public static void addTask(Scanner sc, User currentUser) {
         System.out.println("1. Normal Task");
         System.out.println("2. Deadline Task");
         int taskType = readValidInt(sc, "What type of task do you want to create?", 1, 2);
-        String title = readNonEmptyString(sc,"Enter task title: ");
-        String description = readNonEmptyString(sc,"Enter task description: ");
+        String title = readNonEmptyString(sc, "Enter task title: ");
+        String description = readNonEmptyString(sc, "Enter task description: ");
         boolean done = false;
         Task newTask;
         if (taskType == 1) {
@@ -211,87 +216,104 @@ public class Main {
             newTask = new Task(title, description, done);
         } else {
             // Deadline Task
-            String date = readNonEmptyString(sc, "Enter the deadline date (e.g., 31.12.2026): ");
+            LocalDate date = readValidDate(sc,"Enter the deadline date (e.g., 2026-12-30): ");
             newTask = new DeadlineTask(title, description, done, date);
         }
         currentUser.getTaskManager().addTask(newTask);
         currentUser.getTaskManager().save(currentUser.getUsername() + "_tasks.txt");
     }
+
     public static void showAllTasks(User currentUser, Scanner sc) {
         currentUser.getTaskManager().showAllTasks();
         System.out.println("Press Enter to continue...");
         sc.nextLine();
     }
+
     public static void taskDone(User currentUser, Scanner sc) {
         currentUser.getTaskManager().showAllTasks();
-        int taskChoice = readValidInt(sc,"Select a task number: ",1,currentUser.getTaskManager().getTaskCount());
-            currentUser.getTaskManager().markTaskAsDone(taskChoice);
-            System.out.println("Press Enter to continue...");
-            sc.nextLine();
+        int taskChoice = readValidInt(sc, "Select a task number: ", 1, currentUser.getTaskManager().getTaskCount());
+        currentUser.getTaskManager().markTaskAsDone(taskChoice);
+        System.out.println("Press Enter to continue...");
+        sc.nextLine();
     }
-    public static void taskUndone(Scanner sc,User currentUser){
+
+    public static void taskUndone(Scanner sc, User currentUser) {
         currentUser.getTaskManager().showAllTasks();
-        int taskChoice = readValidInt(sc,"Select a task number: ",1,currentUser.getTaskManager().getTaskCount());
-            currentUser.getTaskManager().markTaskAsUndone(taskChoice);
-            System.out.println("Press Enter to continue...");
-            sc.nextLine();
+        int taskChoice = readValidInt(sc, "Select a task number: ", 1, currentUser.getTaskManager().getTaskCount());
+        currentUser.getTaskManager().markTaskAsUndone(taskChoice);
+        System.out.println("Press Enter to continue...");
+        sc.nextLine();
     }
-    public static void deleteTask(Scanner sc,User currentUser){
+
+    public static void deleteTask(Scanner sc, User currentUser) {
         currentUser.getTaskManager().showAllTasks();
-        int taskChoice = readValidInt(sc,"Select a task number: ",1,currentUser.getTaskManager().getTaskCount());
-            currentUser.getTaskManager().deleteTask(taskChoice);
-            System.out.println("Press Enter to continue...");
-            sc.nextLine();
+        int taskChoice = readValidInt(sc, "Select a task number: ", 1, currentUser.getTaskManager().getTaskCount());
+        currentUser.getTaskManager().deleteTask(taskChoice);
+        System.out.println("Press Enter to continue...");
+        sc.nextLine();
     }
-    public static void editTask(Scanner sc,User currentUser){
+
+    public static void editTask(Scanner sc, User currentUser) {
         TaskManager manager = currentUser.getTaskManager();
         int taskChoice = 0;
         System.out.println("1. Editing task title");
         System.out.println("2. Editing task description");
         System.out.println("3. Editing task title and description");
-        int editChoice = readValidInt(sc,"Select what to edit: ",1,3);
+        int editChoice = readValidInt(sc, "Select what to edit: ", 1, 3);
         manager.showAllTasks();
-        taskChoice = readValidInt(sc,"Select a task number: ",1,currentUser.getTaskManager().getTaskCount());
+        taskChoice = readValidInt(sc, "Select a task number: ", 1, currentUser.getTaskManager().getTaskCount());
 
         if (editChoice == 1) {
-            String newTitle = readNonEmptyString(sc,"The new title? : ");
+            String newTitle = readNonEmptyString(sc, "The new title? : ");
             manager.editTitle(newTitle, taskChoice);
-        }
-        else if (editChoice == 2) {
-            String newDescription = readNonEmptyString(sc,"The new description? : ");
+        } else if (editChoice == 2) {
+            String newDescription = readNonEmptyString(sc, "The new description? : ");
             manager.editDescription(newDescription, taskChoice);
-        }
-        else if (editChoice == 3) {
-            String newTitle = readNonEmptyString(sc,"The new title? : ");
-            String newDescription = readNonEmptyString(sc,"The new description? : ");
+        } else if (editChoice == 3) {
+            String newTitle = readNonEmptyString(sc, "The new title? : ");
+            String newDescription = readNonEmptyString(sc, "The new description? : ");
             manager.editTitle(newTitle, taskChoice);
-            manager.editDescription(newDescription,taskChoice);
+            manager.editDescription(newDescription, taskChoice);
         }
 
         System.out.println("Task edited successfully!");
         System.out.println("Press Enter to continue...");
         sc.nextLine();
     }
-    public static String readNonEmptyString(Scanner sc,String message){
+
+    public static String readNonEmptyString(Scanner sc, String message) {
         String input = "";
         do {
             System.out.println(message);
             input = sc.nextLine();
-        } while(input.isBlank());
+        } while (input.isBlank());
         return input;
     }
+
     public static int readValidInt(Scanner sc, String message, int min, int max) {
         while (true) {
             System.out.println(message);
             try {
                 int number = Integer.parseInt(sc.nextLine());
-                if ( number >= min&& number <= max ) {
+                if (number >= min && number <= max) {
                     return number;
                 } else {
                     System.out.println("Input a number between " + min + " and " + max + " !");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input!");
+            }
+        }
+    }
+
+    public static LocalDate readValidDate(Scanner sc, String message) {
+        while (true) {
+            System.out.println(message);
+            try {
+                LocalDate Date = LocalDate.parse(sc.nextLine());
+                    return Date;
+            } catch (Exception e) {
+                System.out.println("Input Date Format: yyyy-mm-dd");
             }
         }
     }
