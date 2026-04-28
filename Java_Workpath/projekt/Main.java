@@ -54,12 +54,10 @@ public class Main {
                     case 1: {
                         //create task Line#149
                         addTask(sc, currentUser);
-
                         break;
                     }
                     case 2: {
                         //Show all tasks Line#157
-
                         showAllTasks(currentUser, sc);
                         break;
                     }
@@ -67,7 +65,8 @@ public class Main {
                         System.out.println("1 for searching");
                         System.out.println("2 to show done tasks");
                         System.out.println("3 to show undone tasks");
-                        switch (readValidInt(sc,"What would you like to do ?",1,3)){
+                        System.out.println("4 to show all tasks A-Z");
+                        switch (readValidInt(sc,"What would you like to do ?",1,4)){
                             case 1 -> {
                                 currentUser.getTaskManager().searchTasks(readNonEmptyString(sc,"Name of the Task: "));
                                 System.out.println("Press Enter to continue...");
@@ -82,6 +81,10 @@ public class Main {
                                 currentUser.getTaskManager().filterTasks(false);
                                 System.out.println("Press Enter to continue...");
                                 sc.nextLine();
+                            }
+                            case 4 -> {
+                                currentUser.getTaskManager().sortTasksAlphabetically();
+                                showAllTasks(currentUser, sc);
                             }
                         }
 

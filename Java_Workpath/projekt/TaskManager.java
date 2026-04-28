@@ -2,6 +2,7 @@ package Java_Workpath.projekt;
 import java.util.ArrayList;
 import java.io.FileWriter;
 import java.io.File;
+import java.util.Comparator;
 import java.util.Scanner;
 public class TaskManager implements Saveable {
     private final ArrayList<Task> tasks = new ArrayList<>();
@@ -123,5 +124,8 @@ public class TaskManager implements Saveable {
                 task.showTask();
             }
         }
+    }
+    public void sortTasksAlphabetically(){
+            tasks.sort(Comparator.comparing(Task::getTitle));
     }
 }
