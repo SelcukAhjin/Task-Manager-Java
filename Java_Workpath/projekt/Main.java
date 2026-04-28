@@ -1,4 +1,5 @@
 package Java_Workpath.projekt;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.Scanner;
 public class Main {
@@ -121,12 +122,50 @@ public class Main {
                         break;
                     }
                     case 8: {
+                        //change password
+                        System.out.print("""
+                                1. Change password\s
+                                2. Delete User
+                                """);
+                        int subUserInterface = readValidInt(sc, "Your choice: ", 1, 2);
+                        switch (subUserInterface) {
+                            case 1: {
+
+                                if (currentUser.checkPassword(readNonEmptyString(sc, "Current Password"))) {
+                                    String newPassword = readNonEmptyString(sc, "New Password");
+                                    if (lmanager.isValidPassword(newPassword)) {
+                                        currentUser.changePassword(newPassword);
+                                        lmanager.save("users.txt");
+                                        System.out.println("Password changed successfully!");
+                                    }
+
+                                } else {
+                                    System.out.println("Invalid Password!");
+                                    break;
+                                }
+                                break;
+                            }
+
+                            case 2: {
+                                if (currentUser.checkPassword(readNonEmptyString(sc, "Current Password"))) {
+                                    new File(currentUser.getUsername() + "_tasks.txt").delete();
+                                    lmanager.deleteUser(currentUser);
+                                    lmanager.save("users.txt");
+                                    currentUser = null;
+                                    System.out.println("Account DELETED!");
+                                    break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    case 9: {
                         //logout
                         currentUser.getTaskManager().save(currentUser.getUsername() + "_tasks.txt");
                         currentUser = null;
                         break;
                     }
-                    case 9: {
+                    case 10: {
                         //exit
                         currentUser.getTaskManager().save(currentUser.getUsername() + "_tasks.txt");
                         running = false;
@@ -324,4 +363,5 @@ public class Main {
             }
         }
     }
+
 }

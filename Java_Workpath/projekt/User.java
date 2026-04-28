@@ -24,6 +24,9 @@ public class User {
     public String toFileString(){
         return username + ";" + email + ";" + password;
     }
+    public void changePassword(String newPassword){
+        this.password = newPassword;
+    }
     public boolean checkPassword(String inputPassword) {
         return this.password.equals(inputPassword);
     }

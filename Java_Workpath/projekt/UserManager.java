@@ -80,4 +80,7 @@ public class UserManager implements Saveable {
     public boolean isValidPassword(String password){
         return password.length() >= 6;
     }
+    public void deleteUser(User user){
+        users.remove(user);
+    }
 }
