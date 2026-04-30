@@ -4,14 +4,16 @@ public class Task {
     private String title;
     private String description;
     private boolean done;
-    private static int idCounter = 0;
     private int id;
     public Task(String title,String description,boolean done){
-        idCounter++;
         this.title = title;
         this.description = description;
         this.done = done;
-        this.id = idCounter;
+        this.id = getId();
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {

@@ -17,12 +17,6 @@ public class DeadlineTask extends Task {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
-    @Override
-    public String toFileString() {
-        return super.toFileString() + ";" + date;
-    }
-
     @Override
     public void showTask() {
         super.showTask();

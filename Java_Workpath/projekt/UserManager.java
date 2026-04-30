@@ -1,86 +1,101 @@
 package Java_Workpath.projekt;
-import java.io.FileWriter;
-import java.io.File;
-import java.util.Scanner;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
-public class UserManager implements Saveable {
-    private ArrayList<User> users = new ArrayList<>();
+public class UserManager  {
 
-    public void load(String fileName) {
-        users.clear();
-        try {
-            File file = new File(fileName);
-            if (!file.exists()) {
-                return;
-            }
-            Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
-                String line = reader.nextLine();
-                String[] parts = line.split(";");
-                if (parts.length == 3) {
-                    String username = parts[0];
-                    String email = parts[1];
-                    String password = parts[2];
-                    User user = new User(username,email,password);
-                    users.add(user);
+
+    public User login(String loginInput, String password) {
+            String sql = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setString(1, loginInput);
+                pstmt.setString(2, loginInput);
+                pstmt.setString(3, password);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    String dbUsername = rs.getString("username");
+                    String dbEmail = rs.getString("email");
+                    String dbPassword = rs.getString("password");
+                    int dbId = rs.getInt("id");
+                    User user = new User(dbUsername, dbEmail, dbPassword);
+                    user.setId(dbId);
+                    return user;
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            reader.close();
-        } catch (Exception e) {
-            System.out.println("Error while loading tasks!");
-        }
+            return null;
     }
-    public void addUser(User user){
-        users.add(user);
-    }
-    public User login(String loginInput,String password){
-        for (int i = 0; i<users.size();i++){
-            if (users.get(i).getUsername().equals(loginInput) ||users.get(i).getEmail().equals(loginInput)) {
-                if (users.get(i).checkPassword(password)) {
-                    return users.get(i);
-                }
-            }
+    public void addUser(User user) {
+        //  users.add(user);
+        String sql = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+pstmt.setString(1, user.getUsername());
+pstmt.setString(2, user.getEmail());
+pstmt.setString(3, user.getPassword());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+
     }
     public boolean usernameExists(String username) {
-        for (int i = 0; i<users.size(); i++){
-            if (users.get(i).getUsername().equals(username)){
-                return true;
-            }
-        }
-        return false;
-    }
-    public void save(String fileName) {
-        try {
-            FileWriter writer = new FileWriter(fileName);
-            for (User user : users) {
-                writer.write(user.toFileString());
-                writer.write("\n");
-            }
-            writer.close();
-            System.out.println("Tasks saved successfully!");
-        } catch (Exception e) {
-            System.out.println("Error while saving tasks!");
+        String sql = "SELECT * FROM users WHERE username = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,username);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
         }
     }
     public boolean emailExists(String email) {
-        for (int i = 0; i<users.size(); i++){
-            if (users.get(i).getEmail().equals(email)){
-                return true;
+            String sql = "SELECT * FROM users WHERE email = ?";
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1,email);
+                ResultSet rs = pstmt.executeQuery();
+                return rs.next();
+            }catch (SQLException e){
+                e.printStackTrace();
+                return false;
             }
+
         }
-        return false;
-    }
     public boolean isValidEmail(String email){
         return email.contains("@")&&!email.isBlank();
     }
     public boolean isValidPassword(String password){
         return password.length() >= 6;
     }
-    public void deleteUser(User user){
-        users.remove(user);
+    public void deleteUser(User user) {
+        String sql = "DELETE FROM users WHERE username = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+    public void updatePassword(String username, String newPassword){
+        String sql = "UPDATE users SET password = ? WHERE username = ?";
+        try (Connection conn=DatabaseManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,newPassword);
+            pstmt.setString(2,username);
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 }
