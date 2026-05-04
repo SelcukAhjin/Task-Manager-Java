@@ -1,0 +1,268 @@
+package Java_Workpath.projekt.DAO;
+
+import Java_Workpath.projekt.DatabaseManager;
+import Java_Workpath.projekt.DeadlineTask;
+import Java_Workpath.projekt.Task;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+public class taskdao {
+    private final ArrayList<Task> currentTasks = new ArrayList<>();
+    public void addTask(Task task, int userID) {
+        String sql = "INSERT INTO tasks (user_id, task_type, title, description, is_done, deadline_date) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userID);
+            if (task instanceof DeadlineTask) {
+                pstmt.setString(2, "DEADLINE");
+                LocalDate localDate = ((DeadlineTask) task).getDate();
+                pstmt.setDate(6, java.sql.Date.valueOf(localDate));
+            } else {
+                pstmt.setString(2, "NORMAL");
+                pstmt.setNull(6, java.sql.Types.DATE);
+            }
+            pstmt.setString(3, task.getTitle());
+            pstmt.setString(4, task.getDescription());
+            pstmt.setBoolean(5, task.isDone());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void showAllTasks(int userID) {
+        currentTasks.clear();
+        String sql = "SELECT * FROM tasks WHERE user_id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String dbType = rs.getString("task_type");
+
+                if (dbType.equals("DEADLINE")) {
+                    DeadlineTask dt = new DeadlineTask(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"), rs.getDate("deadline_date").toLocalDate());
+                    dt.setId(rs.getInt("id"));
+                    currentTasks.add(dt);
+                    dt.showTask();
+                } else {
+                    Task tk = new Task(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"));
+                    tk.setId(rs.getInt("id"));
+                    currentTasks.add(tk);
+                    tk.showTask();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void editDescription(String newDescription, int taskChoice) {
+        Task taskTodone = currentTasks.get(taskChoice - 1);
+        int dbId = taskTodone.getId();
+        String sql = "UPDATE tasks SET description = ? WHERE id = ?";
+        try (Connection conn=DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,newDescription);
+            pstmt.setInt(2,dbId);
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void editTitle(String newTitle, int taskChoice) {
+        Task taskTodone = currentTasks.get(taskChoice - 1);
+        int dbId = taskTodone.getId();
+        String sql = "UPDATE tasks SET title = ? WHERE id = ?";
+        try (Connection conn=DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,newTitle);
+            pstmt.setInt(2,dbId);
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void markTaskAsDone(int taskChoice) {
+        Task taskTodone = currentTasks.get(taskChoice - 1);
+        int dbId = taskTodone.getId();
+        String sql = "UPDATE tasks SET is_done = ? WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setBoolean(1, true);
+            pstmt.setInt(2, dbId);
+            pstmt.executeUpdate();
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void markTaskAsUndone(int taskChoice) {
+        Task taskToUndone = currentTasks.get(taskChoice - 1);
+        int dbId = taskToUndone.getId();
+        String sql = "UPDATE tasks SET is_done = ? WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setBoolean(1, false);
+            pstmt.setInt(2, dbId);
+            pstmt.executeUpdate();
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void deleteTask(int taskChoice) {
+        Task taskToDelete = currentTasks.get(taskChoice - 1);
+        int dbId = taskToDelete.getId();
+        String sql = "DELETE FROM tasks WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, dbId);
+            pstmt.executeUpdate();
+        } catch(
+                SQLException e)
+
+        {
+            e.printStackTrace();
+        }
+    }
+    public int getTaskCount(int id) {
+        String sql = "SELECT COUNT(*) FROM tasks WHERE user_id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public void searchTasks(String keyword,int userID){
+        String sql = "SELECT * FROM tasks WHERE user_id = ? AND title LIKE ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,userID);
+            pstmt.setString(2, "%"+keyword+"%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String dbType = rs.getString("task_type");
+                if (dbType.equals("DEADLINE")) {
+                    DeadlineTask dt = new DeadlineTask(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"), rs.getDate("deadline_date").toLocalDate());
+                    dt.setId(rs.getInt("id"));
+                    dt.showTask();
+                } else {
+                    Task tk = new Task(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"));
+                    tk.setId(rs.getInt("id"));
+                    tk.showTask();
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void filterTasks(boolean status, int userID){
+        String sql = "SELECT * FROM tasks WHERE user_id = ? AND is_done = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, userID);
+            pstmt.setBoolean(2, status);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String dbType = rs.getString("task_type");
+                if (dbType.equals("DEADLINE")) {
+                    DeadlineTask dt = new DeadlineTask(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"), rs.getDate("deadline_date").toLocalDate());
+                    dt.setId(rs.getInt("id"));
+                    dt.showTask();
+                } else {
+                    Task tk = new Task(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"));
+                    tk.setId(rs.getInt("id"));
+                    tk.showTask();
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void sortTasksAlphabetically(int userID){
+        String sql = "SELECT * FROM tasks WHERE user_id = ? ORDER BY title ASC";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String dbType = rs.getString("task_type");
+                if (dbType.equals("DEADLINE")) {
+                    DeadlineTask dt = new DeadlineTask(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"), rs.getDate("deadline_date").toLocalDate());
+                    dt.setId(rs.getInt("id"));
+                    dt.showTask();
+                } else {
+                    Task tk = new Task(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"));
+                    tk.setId(rs.getInt("id"));
+                    tk.showTask();
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void showDeadlinesSorted(int userID){
+        String sql = "SELECT * FROM tasks WHERE user_id = ? AND task_type = 'DEADLINE' ORDER BY deadline_date ASC";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                DeadlineTask dt = new DeadlineTask(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"), rs.getDate("deadline_date").toLocalDate());
+                dt.setId(rs.getInt("id"));
+                dt.showTask();
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void showDashboard(int userID){
+        int totalCount = 0;
+        int doneCount = 0;
+        int openCount = 0;
+        int overdueCount = 0;
+        String sql = "SELECT * FROM tasks WHERE user_id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String dbType = rs.getString("task_type");
+                boolean done = rs.getBoolean("is_done");
+
+
+                totalCount++;
+                if (dbType.equals("DEADLINE")){
+                    LocalDate deadline = rs.getDate("deadline_date").toLocalDate();
+                    if (!done && deadline.isBefore(LocalDate.now())) {
+                        overdueCount++;
+                    }
+                }
+                if (done) {
+                    doneCount++;
+                } else {
+                    openCount++;
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        System.out.println("=== YOUR DASHBOARD ===\n" +
+                "Total Tasks: " + totalCount + "\n" +
+                "Completed:   " +  doneCount + "\n" +
+                "Open:        " + openCount + "\n" +
+                "OVERDUE:     " +  overdueCount + "\n" +
+                "======================");
+    }
+}

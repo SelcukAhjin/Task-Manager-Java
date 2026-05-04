@@ -1,74 +1,35 @@
 package Java_Workpath.projekt;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 
+import Java_Workpath.projekt.DAO.userdao;
+
+@SuppressWarnings("DataFlowIssue")
 public class UserManager  {
-
+    userdao userDAO = new userdao();
 
     public User login(String loginInput, String password) {
-            String sql = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
-            try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                pstmt.setString(1, loginInput);
-                pstmt.setString(2, loginInput);
-                pstmt.setString(3, password);
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    String dbUsername = rs.getString("username");
-                    String dbEmail = rs.getString("email");
-                    String dbPassword = rs.getString("password");
-                    int dbId = rs.getInt("id");
-                    User user = new User(dbUsername, dbEmail, dbPassword);
-                    user.setId(dbId);
-                    return user;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        User foundUser = userDAO.getUserByInput(loginInput);
+        if (foundUser==null) {
             return null;
-    }
-    public void addUser(User user) {
-        //  users.add(user);
-        String sql = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-pstmt.setString(1, user.getUsername());
-pstmt.setString(2, user.getEmail());
-pstmt.setString(3, user.getPassword());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
+        else {
+            if (BCrypt.checkpw(password,foundUser.getPassword())) {
+                return foundUser;
+            }
+        }
+        return null;
+    }
+    public void addUser(String username, String email, String password)
+    {
+        User user = new User(username,email,BCrypt.hashpw(password,BCrypt.gensalt()));
+        userDAO.addUser(user);
     }
     public boolean usernameExists(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1,username);
-            ResultSet rs = pstmt.executeQuery();
-            return rs.next();
-        }catch (SQLException e){
-            e.printStackTrace();
-            return false;
-        }
+        return userDAO.usernameExists(username);
     }
     public boolean emailExists(String email) {
-            String sql = "SELECT * FROM users WHERE email = ?";
-            try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1,email);
-                ResultSet rs = pstmt.executeQuery();
-                return rs.next();
-            }catch (SQLException e){
-                e.printStackTrace();
-                return false;
-            }
-
+            return userDAO.emailExists(email);
         }
     public boolean isValidEmail(String email){
         return email.contains("@")&&!email.isBlank();
@@ -77,25 +38,9 @@ pstmt.setString(3, user.getPassword());
         return password.length() >= 6;
     }
     public void deleteUser(User user) {
-        String sql = "DELETE FROM users WHERE username = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, user.getUsername());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userDAO.deleteUser(user);
     }
-    public void updatePassword(String username, String newPassword){
-        String sql = "UPDATE users SET password = ? WHERE username = ?";
-        try (Connection conn=DatabaseManager.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setString(1,newPassword);
-            pstmt.setString(2,username);
-            pstmt.executeUpdate();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+    public void updatePassword(String username, String newPassword) {
+        userDAO.updatePassword(username, BCrypt.hashpw(newPassword,BCrypt.gensalt()));
     }
-
 }

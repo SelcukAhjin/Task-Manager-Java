@@ -232,8 +232,8 @@ public class Main {
             sc.nextLine();
             return;
         }
-        User user = new User(username, email, password);
-        lmanager.addUser(user);
+
+        lmanager.addUser(username,email,password);
         System.out.println("Successfully Registered!");
         System.out.println("Press Enter to continue...");
         sc.nextLine();

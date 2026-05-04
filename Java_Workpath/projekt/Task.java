@@ -26,21 +26,6 @@ public class Task {
         System.out.println("Status: "+ (done ? "done" : "undone"));
         System.out.println("Id: "+id+".");
     }
-    public void markAsDone(){
-        done = true;
-    }
-    public void changeTitle(String newTitle){
-        title = newTitle;
-    }
-    public void changeDescription(String newDescription){
-        description = newDescription;
-    }
-    public String toFileString(){
-        return title + ";" + description + ";" + done;
-    }
-    public void markAsUndone() {
-        done = false;
-    }
     public String getTitle() {
         return title;
     }
