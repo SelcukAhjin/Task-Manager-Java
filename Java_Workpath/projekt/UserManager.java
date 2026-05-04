@@ -1,12 +1,14 @@
 package Java_Workpath.projekt;
 
 
-import Java_Workpath.projekt.DAO.userdao;
+import Java_Workpath.projekt.dao.UserDAO;
 
 @SuppressWarnings("DataFlowIssue")
 public class UserManager  {
-    userdao userDAO = new userdao();
-
+    UserDAO userDAO;
+public UserManager(UserDAO injectDAO) {
+    this.userDAO = injectDAO;
+}
     public User login(String loginInput, String password) {
 
         User foundUser = userDAO.getUserByInput(loginInput);

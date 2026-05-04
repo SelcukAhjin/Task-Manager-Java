@@ -1,10 +1,10 @@
 package Java_Workpath.projekt;
 
-import Java_Workpath.projekt.DAO.taskdao;
+import Java_Workpath.projekt.dao.TaskDAO;
 
 @SuppressWarnings({"CallToPrintStackTrace", "TryStatementWithMultipleResources", "DataFlowIssue"})
 public class TaskManager {
-    taskdao taskDAO = new taskdao();
+    TaskDAO taskDAO = new TaskDAO();
 
 
     public void addTask(Task task, int userID) {

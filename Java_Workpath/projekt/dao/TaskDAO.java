@@ -1,4 +1,4 @@
-package Java_Workpath.projekt.DAO;
+package Java_Workpath.projekt.dao;
 
 import Java_Workpath.projekt.DatabaseManager;
 import Java_Workpath.projekt.DeadlineTask;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class taskdao {
+public class TaskDAO {
     private final ArrayList<Task> currentTasks = new ArrayList<>();
     public void addTask(Task task, int userID) {
         String sql = "INSERT INTO tasks (user_id, task_type, title, description, is_done, deadline_date) VALUES (?, ?, ?, ?, ?, ?)";

@@ -1,10 +1,12 @@
 package Java_Workpath.projekt;
+import Java_Workpath.projekt.dao.UserDAO;
+
 import java.time.LocalDate;
 import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
-
-        UserManager lmanager = new UserManager();
+        UserDAO userDAO = new UserDAO();
+        UserManager lmanager = new UserManager(userDAO);
         Scanner sc = new Scanner(System.in);
         boolean running = true;
         int choiceHub = 0;

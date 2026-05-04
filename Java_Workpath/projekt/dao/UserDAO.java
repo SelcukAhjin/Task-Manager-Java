@@ -1,4 +1,4 @@
-package Java_Workpath.projekt.DAO;
+package Java_Workpath.projekt.dao;
 
 import Java_Workpath.projekt.BCrypt;
 import Java_Workpath.projekt.DatabaseManager;
@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class userdao {
+public class UserDAO {
     public User getUserByInput(String loginInput) {
         String sql = "SELECT * FROM users WHERE username = ? OR email = ?";
         try (Connection conn = DatabaseManager.getConnection();
