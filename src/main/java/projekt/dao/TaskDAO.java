@@ -1,8 +1,8 @@
-package Java_Workpath.projekt.dao;
+package projekt.dao;
 
-import Java_Workpath.projekt.DatabaseManager;
-import Java_Workpath.projekt.DeadlineTask;
-import Java_Workpath.projekt.Task;
+import projekt.DatabaseManager;
+import projekt.DeadlineTask;
+import projekt.Task;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

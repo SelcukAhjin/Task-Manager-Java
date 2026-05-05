@@ -1,6 +1,6 @@
-package Java_Workpath.projekt;
+package projekt;
 
-import Java_Workpath.projekt.dao.TaskDAO;
+import projekt.dao.TaskDAO;
 
 @SuppressWarnings({"CallToPrintStackTrace", "TryStatementWithMultipleResources", "DataFlowIssue"})
 public class TaskManager {

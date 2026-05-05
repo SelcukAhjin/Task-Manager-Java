@@ -1,4 +1,4 @@
-package Java_Workpath.projekt;
+package projekt;
 
 public class User {
 

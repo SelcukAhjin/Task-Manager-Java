@@ -1,11 +1,11 @@
-package Java_Workpath.Test;
-
-import Java_Workpath.projekt.UserManager;
+import projekt.UserManager;
+import projekt.dao.UserDAO;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserManagerTest {
-    UserManager um = new UserManager();
+    UserDAO mochDAO = new UserDAO();
+    UserManager um = new UserManager(mochDAO);
 
 
     @org.junit.jupiter.api.Test

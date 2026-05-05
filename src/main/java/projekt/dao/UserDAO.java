@@ -1,8 +1,8 @@
-package Java_Workpath.projekt.dao;
+package projekt.dao;
 
-import Java_Workpath.projekt.BCrypt;
-import Java_Workpath.projekt.DatabaseManager;
-import Java_Workpath.projekt.User;
+import projekt.BCrypt;
+import projekt.DatabaseManager;
+import projekt.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

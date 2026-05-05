@@ -1,7 +1,7 @@
-package Java_Workpath.projekt;
+package projekt;
 
 
-import Java_Workpath.projekt.dao.UserDAO;
+import projekt.dao.UserDAO;
 
 @SuppressWarnings("DataFlowIssue")
 public class UserManager  {

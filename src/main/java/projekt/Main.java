@@ -1,5 +1,5 @@
-package Java_Workpath.projekt;
-import Java_Workpath.projekt.dao.UserDAO;
+package projekt;
+import projekt.dao.UserDAO;
 
 import java.time.LocalDate;
 import java.util.Scanner;
