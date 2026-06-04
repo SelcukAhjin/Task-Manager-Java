@@ -4,6 +4,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.internal.matchers.Null;
 import org.mockito.junit.jupiter.MockitoExtension;
 import projekt.BCrypt;
 import projekt.User;
@@ -13,11 +14,6 @@ import projekt.dao.UserDAO;
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class UserManagerTest {
-
-    @BeforeEach
-    void setUp(){
-        org.mockito.MockitoAnnotations.openMocks(this);
-    }
 
     @Mock
     UserDAO mockDAO;
@@ -34,7 +30,19 @@ class UserManagerTest {
 
 
     }
+    @Test
+    void loginWithCorrectPassword(){
+        User testUser = new User("TestingUser","Test@mail.com",BCrypt.hashpw("123457", BCrypt.gensalt()));
 
+        Mockito.when(mockDAO.getUserByInput("TestingUser")).thenReturn(testUser);
+        assertNotNull(um.login("TestingUser","123457"));
+    }
+
+    @Test
+    void loginWithWrongUser(){
+        User testUser = new User("Test","test@mail.com",BCrypt.hashpw("1234567", BCrypt.gensalt()));
+        assertNull(um.login("tesst","1234567"));
+    }
 
 
     @Test
