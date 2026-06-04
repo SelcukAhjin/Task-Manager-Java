@@ -10,6 +10,10 @@ public class DeadlineTask extends Task {
         this.date = date;
     }
 
+    public boolean isOverdue(){
+        return date.isBefore(LocalDate.now())&&!super.isDone();
+}
+
     public LocalDate getDate() {
         return date;
     }
@@ -17,9 +21,8 @@ public class DeadlineTask extends Task {
     public void showTask() {
         super.showTask();
         System.out.println("Date: " + date);
-        if (date.isBefore(LocalDate.now()) && !super.isDone()) {
-            System.out.println("*** [ÜBERFÄLLIG] ***");
-        }
+        if (this.isOverdue()) {
+            System.out.println("*** [OVERDUE] ***"); }
     }
 }
 
