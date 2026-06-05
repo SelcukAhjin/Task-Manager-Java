@@ -6,7 +6,9 @@ public class Task {
     private boolean done;
     private int id;
     public enum Priority {LOW,MEDIUM,HIGH};
-    public Priority prio =  Priority.LOW;
+    private Priority prio =  Priority.LOW;
+    public enum Kategorie {WORK,PERSONAL,SCHOOL}
+    private Kategorie kat = Kategorie.WORK;
     public Task(String title,String description,boolean done){
         this.title = title;
         this.description = description;
@@ -34,6 +36,8 @@ public class Task {
         System.out.println("Description:  "+description);
         System.out.println("Status: "+ (done ? "done" : "undone"));
         System.out.println("Id: "+id+".");
+        System.out.println("Prio: "+prio);
+        System.out.println("Kat: "+kat);
     }
     public String getTitle() {
         return title;
@@ -44,5 +48,8 @@ public class Task {
     public boolean isDone() {
         return done;
     }
-
+    public void setKat(Kategorie kat) {this.kat = kat;}
+    public Kategorie getKat() {
+        return kat;
+    }
 }

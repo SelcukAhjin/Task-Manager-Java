@@ -15,7 +15,7 @@ public class TaskDAO {
     private final ArrayList<Task> currentTasks = new ArrayList<>();
 
     public void addTask(Task task, int userID) {
-        String sql = "INSERT INTO tasks (user_id, task_type, title, description, is_done, deadline_date,priority) VALUES (?, ?, ?, ?, ?, ?,?)";
+        String sql = "INSERT INTO tasks (user_id, task_type, title, description, is_done, deadline_date,priority,kategorie) VALUES (?, ?, ?, ?, ?, ?,?,?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userID);
@@ -31,6 +31,7 @@ public class TaskDAO {
             pstmt.setString(4, task.getDescription());
             pstmt.setBoolean(5, task.isDone());
             pstmt.setString(7, task.getPrio().name());
+            pstmt.setString(8, task.getKat().name());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -241,12 +242,14 @@ public class TaskDAO {
             DeadlineTask dt = new DeadlineTask(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"), rs.getDate("deadline_date").toLocalDate());
             dt.setId(rs.getInt("id"));
             dt.setPrio(Task.Priority.valueOf(rs.getString("priority")));
+            dt.setKat(Task.Kategorie.valueOf(rs.getString("kategorie")));
             dt.showTask();
             return dt;
         } else {
             Task tk = new Task(rs.getString("title"), rs.getString("description"), rs.getBoolean("is_done"));
             tk.setId(rs.getInt("id"));
             tk.setPrio(Task.Priority.valueOf(rs.getString("priority")));
+            tk.setKat(Task.Kategorie.valueOf(rs.getString("kategorie")));
             tk.showTask();
             return tk;
         }
