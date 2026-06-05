@@ -3,11 +3,13 @@ package projekt.dao;
 import projekt.BCrypt;
 import projekt.DatabaseManager;
 import projekt.User;
+import projekt.UserManager;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+;
 public class UserDAO {
     public User getUserByInput(String loginInput) {
         String sql = "SELECT * FROM users WHERE username = ? OR email = ?";
@@ -15,12 +17,14 @@ public class UserDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, loginInput);
             pstmt.setString(2, loginInput);
+
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 String dbUsername = rs.getString("username");
                 String dbEmail = rs.getString("email");
                 String dbPassword = rs.getString("password");
                 User user = new User(dbUsername, dbEmail, dbPassword);
+                user.setId(rs.getInt("id"));
                 return user;
             }
         } catch (SQLException e) {

@@ -5,11 +5,20 @@ public class Task {
     private String description;
     private boolean done;
     private int id;
+    public enum Priority {LOW,MEDIUM,HIGH};
+    public Priority prio =  Priority.LOW;
     public Task(String title,String description,boolean done){
         this.title = title;
         this.description = description;
         this.done = done;
-        this.id = getId();
+    }
+
+    public void setPrio(Priority Choice){
+        this.prio = Choice;
+    }
+
+    public Priority getPrio(){
+        return prio;
     }
 
     public void setId(int id) {
@@ -35,4 +44,5 @@ public class Task {
     public boolean isDone() {
         return done;
     }
+
 }
