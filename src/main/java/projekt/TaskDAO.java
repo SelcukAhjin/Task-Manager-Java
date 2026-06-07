@@ -1,8 +1,4 @@
-package projekt.dao;
-
-import projekt.DatabaseManager;
-import projekt.DeadlineTask;
-import projekt.Task;
+package projekt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +34,7 @@ public class TaskDAO {
         }
     }
 
-    public void showAllTasks(int userID) {
+    public ArrayList<Task> showAllTasks(int userID) {
         currentTasks.clear();
         String sql = "SELECT * FROM tasks WHERE user_id = ?";
         try (Connection conn = DatabaseManager.getConnection();
@@ -52,6 +48,7 @@ public class TaskDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return currentTasks;
     }
 
     public void editDescription(String newDescription, int taskChoice) {

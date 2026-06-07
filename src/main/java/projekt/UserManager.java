@@ -1,8 +1,6 @@
 package projekt;
 
 
-import projekt.dao.UserDAO;
-
 @SuppressWarnings("DataFlowIssue")
 public class UserManager  {
     UserDAO userDAO;

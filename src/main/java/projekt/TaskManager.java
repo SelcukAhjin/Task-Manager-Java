@@ -1,7 +1,5 @@
 package projekt;
 
-import projekt.dao.TaskDAO;
-
 @SuppressWarnings({"CallToPrintStackTrace", "TryStatementWithMultipleResources", "DataFlowIssue"})
 public class TaskManager {
     TaskDAO taskDAO = new TaskDAO();

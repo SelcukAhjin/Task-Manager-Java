@@ -1,9 +1,8 @@
-package projekt.dao;
+package com.example.demo.dao;
 
-import projekt.BCrypt;
-import projekt.DatabaseManager;
-import projekt.User;
-import projekt.UserManager;
+import com.example.demo.BCrypt;
+import com.example.demo.DatabaseManager;
+import com.example.demo.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

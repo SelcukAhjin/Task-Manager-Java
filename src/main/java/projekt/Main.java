@@ -1,5 +1,4 @@
 package projekt;
-import projekt.dao.UserDAO;
 
 import java.time.LocalDate;
 import java.util.Scanner;
